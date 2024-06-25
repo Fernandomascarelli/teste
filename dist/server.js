@@ -6387,34 +6387,37 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 
 // src/server.ts
 var app = (0, import_fastify.default)();
-app.post("/transform", (request, reply) => {
-  const urlSchema = import_zod.z.object({
-    url: import_zod.z.string()
-  });
-  const { url } = urlSchema.parse(request.body);
-  async function getDataBlob(url2) {
-    try {
-      const res = await fetch(url2);
-      const buffer = await res.buffer();
-      const base64Data = buffer.toString("base64");
-      return base64Data;
-    } catch (err) {
-      console.error("Ero:", err);
-      throw err;
-    }
+var urlSchema = import_zod.z.object({
+  url: import_zod.z.string()
+});
+async function getDataBlob(url) {
+  try {
+    const res = await fetch(url);
+    const buffer = await res.buffer();
+    const base64Data = buffer.toString("base64");
+    return base64Data;
+  } catch (err) {
+    console.error("Erro ao obter dados:", err);
+    throw err;
   }
-  getDataBlob(url).then((base64Data) => {
-    console.log("Base64:", base64Data);
-  }).catch((err) => {
-    console.error("Ero:", err);
-  });
-  return reply.status(200).send(getDataBlob(url));
+}
+app.post("/transform", async (request, reply) => {
+  try {
+    const { url } = urlSchema.parse(request.body);
+    const base64Data = await getDataBlob(url);
+    return reply.status(200).send(base64Data);
+  } catch (err) {
+    console.error("Erro na requisi\xE7\xE3o:", err);
+    return reply.status(500).send({ error: "Erro ao processar a requisi\xE7\xE3o" });
+  }
 });
 app.listen({
   host: "0.0.0.0",
-  port: process.env.PORT ? Number(process.env.PORT) : 3222
+  port: process.env.PORT ? Number(process.env.PORT) : 3087
 }).then(() => {
-  console.log("HTTP Server Running");
+  console.log("Servidor HTTP rodando");
+}).catch((err) => {
+  console.error("Erro ao iniciar o servidor:", err);
 });
 /*! Bundled license information:
 
