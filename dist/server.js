@@ -1,13 +1,31 @@
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __knownSymbol = (name, symbol) => (symbol = Symbol[name]) ? symbol : Symbol.for("Symbol." + name);
 var __typeError = (msg) => {
   throw TypeError(msg);
 };
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
@@ -38,6 +56,70 @@ var __accessCheck = (obj, member, msg) => member.has(obj) || __typeError("Cannot
 var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read from private field"), getter ? getter.call(obj) : member.get(obj));
 var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
 var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), setter ? setter.call(obj, value) : member.set(obj, value), value);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+var __await = function(promise, isYieldStar) {
+  this[0] = promise;
+  this[1] = isYieldStar;
+};
+var __asyncGenerator = (__this, __arguments, generator) => {
+  var resume = (k, v, yes, no) => {
+    try {
+      var x2 = generator[k](v), isAwait = (v = x2.value) instanceof __await, done = x2.done;
+      Promise.resolve(isAwait ? v[0] : v).then((y) => isAwait ? resume(k === "return" ? k : "next", v[1] ? { done: y.done, value: y.value } : y, yes, no) : yes({ value: y, done })).catch((e2) => resume("throw", e2, yes, no));
+    } catch (e2) {
+      no(e2);
+    }
+  }, method = (k) => it[k] = (x2) => new Promise((yes, no) => resume(k, x2, yes, no)), it = {};
+  return generator = generator.apply(__this, __arguments), it[__knownSymbol("asyncIterator")] = () => it, method("next"), method("throw"), method("return"), it;
+};
+var __yieldStar = (value) => {
+  var obj = value[__knownSymbol("asyncIterator")], isAwait = false, method, it = {};
+  if (obj == null) {
+    obj = value[__knownSymbol("iterator")]();
+    method = (k) => it[k] = (x2) => obj[k](x2);
+  } else {
+    obj = obj.call(value);
+    method = (k) => it[k] = (v) => {
+      if (isAwait) {
+        isAwait = false;
+        if (k === "throw") throw v;
+        return v;
+      }
+      isAwait = true;
+      return {
+        done: false,
+        value: new __await(new Promise((resolve) => {
+          var x2 = obj[k](v);
+          if (!(x2 instanceof Object)) __typeError("Object expected");
+          resolve(x2);
+        }), 1)
+      };
+    };
+  }
+  return it[__knownSymbol("iterator")] = () => it, method("next"), "throw" in obj ? method("throw") : it.throw = (x2) => {
+    throw x2;
+  }, "return" in obj && method("return"), it;
+};
+var __forAwait = (obj, it, method) => (it = obj[__knownSymbol("asyncIterator")]) ? it.call(obj) : (obj = obj[__knownSymbol("iterator")](), it = {}, method = (key, fn) => (fn = obj[key]) && (it[key] = (arg) => new Promise((yes, no, done) => (arg = fn.call(obj, arg), done = arg.done, Promise.resolve(arg.value).then((value) => yes({ value, done }), no)))), method("next"), method("return"), it);
 
 // ../../../node_modules/web-streams-polyfill/dist/ponyfill.es2018.js
 var require_ponyfill_es2018 = __commonJS({
@@ -496,7 +578,9 @@ var require_ponyfill_es2018 = __commonJS({
       function defaultReaderBrandCheckException(name) {
         return new TypeError(`ReadableStreamDefaultReader.prototype.${name} can only be used on a ReadableStreamDefaultReader`);
       }
-      const AsyncIteratorPrototype = Object.getPrototypeOf(Object.getPrototypeOf(async function* () {
+      const AsyncIteratorPrototype = Object.getPrototypeOf(Object.getPrototypeOf(function() {
+        return __asyncGenerator(this, null, function* () {
+        });
       }).prototype);
       class ReadableStreamAsyncIteratorImpl {
         constructor(reader, preventCancel) {
@@ -650,8 +734,10 @@ var require_ponyfill_es2018 = __commonJS({
         const syncIterable = {
           [Symbol.iterator]: () => syncIteratorRecord.iterator
         };
-        const asyncIterator = async function* () {
-          return yield* syncIterable;
+        const asyncIterator = function() {
+          return __asyncGenerator(this, null, function* () {
+            return yield* __yieldStar(syncIterable);
+          });
         }();
         const nextMethod = asyncIterator.next;
         return { iterator: asyncIterator, nextMethod, done: false };
@@ -4345,14 +4431,16 @@ var require_streams = __commonJS({
           const blob = this;
           return new ReadableStream({
             type: "bytes",
-            async pull(ctrl) {
-              const chunk = blob.slice(position, Math.min(blob.size, position + POOL_SIZE2));
-              const buffer = await chunk.arrayBuffer();
-              position += buffer.byteLength;
-              ctrl.enqueue(new Uint8Array(buffer));
-              if (position === blob.size) {
-                ctrl.close();
-              }
+            pull(ctrl) {
+              return __async(this, null, function* () {
+                const chunk = blob.slice(position, Math.min(blob.size, position + POOL_SIZE2));
+                const buffer = yield chunk.arrayBuffer();
+                position += buffer.byteLength;
+                ctrl.enqueue(new Uint8Array(buffer));
+                if (position === blob.size) {
+                  ctrl.close();
+                }
+              });
             }
           });
         };
@@ -4363,39 +4451,41 @@ var require_streams = __commonJS({
 });
 
 // ../../../node_modules/fetch-blob/index.js
-async function* toIterator(parts, clone2 = true) {
-  for (const part of parts) {
-    if ("stream" in part) {
-      yield* (
-        /** @type {AsyncIterableIterator<Uint8Array>} */
-        part.stream()
-      );
-    } else if (ArrayBuffer.isView(part)) {
-      if (clone2) {
-        let position = part.byteOffset;
-        const end = part.byteOffset + part.byteLength;
-        while (position !== end) {
-          const size = Math.min(end - position, POOL_SIZE);
-          const chunk = part.buffer.slice(position, position + size);
-          position += chunk.byteLength;
-          yield new Uint8Array(chunk);
+function toIterator(parts, clone2 = true) {
+  return __asyncGenerator(this, null, function* () {
+    for (const part of parts) {
+      if ("stream" in part) {
+        yield* __yieldStar(
+          /** @type {AsyncIterableIterator<Uint8Array>} */
+          part.stream()
+        );
+      } else if (ArrayBuffer.isView(part)) {
+        if (clone2) {
+          let position = part.byteOffset;
+          const end = part.byteOffset + part.byteLength;
+          while (position !== end) {
+            const size = Math.min(end - position, POOL_SIZE);
+            const chunk = part.buffer.slice(position, position + size);
+            position += chunk.byteLength;
+            yield new Uint8Array(chunk);
+          }
+        } else {
+          yield part;
         }
       } else {
-        yield part;
-      }
-    } else {
-      let position = 0, b = (
-        /** @type {Blob} */
-        part
-      );
-      while (position !== b.size) {
-        const chunk = b.slice(position, Math.min(b.size, position + POOL_SIZE));
-        const buffer = await chunk.arrayBuffer();
-        position += buffer.byteLength;
-        yield new Uint8Array(buffer);
+        let position = 0, b = (
+          /** @type {Blob} */
+          part
+        );
+        while (position !== b.size) {
+          const chunk = b.slice(position, Math.min(b.size, position + POOL_SIZE));
+          const buffer = yield new __await(chunk.arrayBuffer());
+          position += buffer.byteLength;
+          yield new Uint8Array(buffer);
+        }
       }
     }
-  }
+  });
 }
 var import_streams, POOL_SIZE, _parts, _type, _size, _endings, _a, _Blob, Blob, fetch_blob_default;
 var init_fetch_blob = __esm({
@@ -4467,14 +4557,28 @@ var init_fetch_blob = __esm({
        *
        * @return {Promise<string>}
        */
-      async text() {
-        const decoder = new TextDecoder();
-        let str = "";
-        for await (const part of toIterator(__privateGet(this, _parts), false)) {
-          str += decoder.decode(part, { stream: true });
-        }
-        str += decoder.decode();
-        return str;
+      text() {
+        return __async(this, null, function* () {
+          const decoder = new TextDecoder();
+          let str = "";
+          try {
+            for (var iter = __forAwait(toIterator(__privateGet(this, _parts), false)), more, temp, error; more = !(temp = yield iter.next()).done; more = false) {
+              const part = temp.value;
+              str += decoder.decode(part, { stream: true });
+            }
+          } catch (temp) {
+            error = [temp];
+          } finally {
+            try {
+              more && (temp = iter.return) && (yield temp.call(iter));
+            } finally {
+              if (error)
+                throw error[0];
+            }
+          }
+          str += decoder.decode();
+          return str;
+        });
       }
       /**
        * The arrayBuffer() method in the Blob interface returns a
@@ -4483,26 +4587,44 @@ var init_fetch_blob = __esm({
        *
        * @return {Promise<ArrayBuffer>}
        */
-      async arrayBuffer() {
-        const data = new Uint8Array(this.size);
-        let offset = 0;
-        for await (const chunk of toIterator(__privateGet(this, _parts), false)) {
-          data.set(chunk, offset);
-          offset += chunk.length;
-        }
-        return data.buffer;
+      arrayBuffer() {
+        return __async(this, null, function* () {
+          const data = new Uint8Array(this.size);
+          let offset = 0;
+          try {
+            for (var iter = __forAwait(toIterator(__privateGet(this, _parts), false)), more, temp, error; more = !(temp = yield iter.next()).done; more = false) {
+              const chunk = temp.value;
+              data.set(chunk, offset);
+              offset += chunk.length;
+            }
+          } catch (temp) {
+            error = [temp];
+          } finally {
+            try {
+              more && (temp = iter.return) && (yield temp.call(iter));
+            } finally {
+              if (error)
+                throw error[0];
+            }
+          }
+          return data.buffer;
+        });
       }
       stream() {
         const it = toIterator(__privateGet(this, _parts), true);
         return new globalThis.ReadableStream({
           // @ts-ignore
           type: "bytes",
-          async pull(ctrl) {
-            const chunk = await it.next();
-            chunk.done ? ctrl.close() : ctrl.enqueue(chunk.value);
+          pull(ctrl) {
+            return __async(this, null, function* () {
+              const chunk = yield it.next();
+              chunk.done ? ctrl.close() : ctrl.enqueue(chunk.value);
+            });
           },
-          async cancel() {
-            await it.return();
+          cancel() {
+            return __async(this, null, function* () {
+              yield it.return();
+            });
           }
         });
       }
@@ -4618,7 +4740,7 @@ function formDataToBlob(F2, B = fetch_blob_default) {
 Content-Disposition: form-data; name="`;
   F2.forEach((v, n) => typeof v == "string" ? c.push(p + e(n) + `"\r
 \r
-${v.replace(/\r(?!\n)|(?<!\r)\n/g, "\r\n")}\r
+${v.replace(new RegExp("\\r(?!\\n)|(?<!\\r)\\n", "g"), "\r\n")}\r
 `) : c.push(p + e(n) + `"; filename="${e(v.name, 1)}"\r
 Content-Type: ${v.type || "application/octet-stream"}\r
 \r
@@ -4698,7 +4820,7 @@ var init_esm_min = __esm({
         __privateSet(this, _d, b);
       }
       *entries() {
-        yield* __privateGet(this, _d);
+        yield* __yieldStar(__privateGet(this, _d));
       }
       *keys() {
         for (var [a] of this) yield a;
@@ -4758,79 +4880,93 @@ function _fileName(headerValue) {
   });
   return filename;
 }
-async function toFormData(Body2, ct) {
-  if (!/multipart/i.test(ct)) {
-    throw new TypeError("Failed to fetch");
-  }
-  const m2 = ct.match(/boundary=(?:"([^"]+)"|([^;]+))/i);
-  if (!m2) {
-    throw new TypeError("no or bad content-type header, no multipart boundary");
-  }
-  const parser = new MultipartParser(m2[1] || m2[2]);
-  let headerField;
-  let headerValue;
-  let entryValue;
-  let entryName;
-  let contentType;
-  let filename;
-  const entryChunks = [];
-  const formData = new FormData();
-  const onPartData = (ui8a) => {
-    entryValue += decoder.decode(ui8a, { stream: true });
-  };
-  const appendToFile = (ui8a) => {
-    entryChunks.push(ui8a);
-  };
-  const appendFileToFormData = () => {
-    const file = new file_default(entryChunks, filename, { type: contentType });
-    formData.append(entryName, file);
-  };
-  const appendEntryToFormData = () => {
-    formData.append(entryName, entryValue);
-  };
-  const decoder = new TextDecoder("utf-8");
-  decoder.decode();
-  parser.onPartBegin = function() {
-    parser.onPartData = onPartData;
-    parser.onPartEnd = appendEntryToFormData;
-    headerField = "";
-    headerValue = "";
-    entryValue = "";
-    entryName = "";
-    contentType = "";
-    filename = null;
-    entryChunks.length = 0;
-  };
-  parser.onHeaderField = function(ui8a) {
-    headerField += decoder.decode(ui8a, { stream: true });
-  };
-  parser.onHeaderValue = function(ui8a) {
-    headerValue += decoder.decode(ui8a, { stream: true });
-  };
-  parser.onHeaderEnd = function() {
-    headerValue += decoder.decode();
-    headerField = headerField.toLowerCase();
-    if (headerField === "content-disposition") {
-      const m3 = headerValue.match(/\bname=("([^"]*)"|([^()<>@,;:\\"/[\]?={}\s\t]+))/i);
-      if (m3) {
-        entryName = m3[2] || m3[3] || "";
-      }
-      filename = _fileName(headerValue);
-      if (filename) {
-        parser.onPartData = appendToFile;
-        parser.onPartEnd = appendFileToFormData;
-      }
-    } else if (headerField === "content-type") {
-      contentType = headerValue;
+function toFormData(Body2, ct) {
+  return __async(this, null, function* () {
+    if (!/multipart/i.test(ct)) {
+      throw new TypeError("Failed to fetch");
     }
-    headerValue = "";
-    headerField = "";
-  };
-  for await (const chunk of Body2) {
-    parser.write(chunk);
-  }
-  parser.end();
-  return formData;
+    const m2 = ct.match(/boundary=(?:"([^"]+)"|([^;]+))/i);
+    if (!m2) {
+      throw new TypeError("no or bad content-type header, no multipart boundary");
+    }
+    const parser = new MultipartParser(m2[1] || m2[2]);
+    let headerField;
+    let headerValue;
+    let entryValue;
+    let entryName;
+    let contentType;
+    let filename;
+    const entryChunks = [];
+    const formData = new FormData();
+    const onPartData = (ui8a) => {
+      entryValue += decoder.decode(ui8a, { stream: true });
+    };
+    const appendToFile = (ui8a) => {
+      entryChunks.push(ui8a);
+    };
+    const appendFileToFormData = () => {
+      const file = new file_default(entryChunks, filename, { type: contentType });
+      formData.append(entryName, file);
+    };
+    const appendEntryToFormData = () => {
+      formData.append(entryName, entryValue);
+    };
+    const decoder = new TextDecoder("utf-8");
+    decoder.decode();
+    parser.onPartBegin = function() {
+      parser.onPartData = onPartData;
+      parser.onPartEnd = appendEntryToFormData;
+      headerField = "";
+      headerValue = "";
+      entryValue = "";
+      entryName = "";
+      contentType = "";
+      filename = null;
+      entryChunks.length = 0;
+    };
+    parser.onHeaderField = function(ui8a) {
+      headerField += decoder.decode(ui8a, { stream: true });
+    };
+    parser.onHeaderValue = function(ui8a) {
+      headerValue += decoder.decode(ui8a, { stream: true });
+    };
+    parser.onHeaderEnd = function() {
+      headerValue += decoder.decode();
+      headerField = headerField.toLowerCase();
+      if (headerField === "content-disposition") {
+        const m3 = headerValue.match(/\bname=("([^"]*)"|([^()<>@,;:\\"/[\]?={}\s\t]+))/i);
+        if (m3) {
+          entryName = m3[2] || m3[3] || "";
+        }
+        filename = _fileName(headerValue);
+        if (filename) {
+          parser.onPartData = appendToFile;
+          parser.onPartEnd = appendFileToFormData;
+        }
+      } else if (headerField === "content-type") {
+        contentType = headerValue;
+      }
+      headerValue = "";
+      headerField = "";
+    };
+    try {
+      for (var iter = __forAwait(Body2), more, temp, error; more = !(temp = yield iter.next()).done; more = false) {
+        const chunk = temp.value;
+        parser.write(chunk);
+      }
+    } catch (temp) {
+      error = [temp];
+    } finally {
+      try {
+        more && (temp = iter.return) && (yield temp.call(iter));
+      } finally {
+        if (error)
+          throw error[0];
+      }
+    }
+    parser.end();
+    return formData;
+  });
 }
 var s, S, f2, F, LF, CR, SPACE, HYPHEN, COLON, A, Z, lower, noop, MultipartParser;
 var init_multipart_parser = __esm({
@@ -5267,33 +5403,39 @@ var Body = class {
    *
    * @return  Promise
    */
-  async arrayBuffer() {
-    const { buffer, byteOffset, byteLength } = await consumeBody(this);
-    return buffer.slice(byteOffset, byteOffset + byteLength);
+  arrayBuffer() {
+    return __async(this, null, function* () {
+      const { buffer, byteOffset, byteLength } = yield consumeBody(this);
+      return buffer.slice(byteOffset, byteOffset + byteLength);
+    });
   }
-  async formData() {
-    const ct = this.headers.get("content-type");
-    if (ct.startsWith("application/x-www-form-urlencoded")) {
-      const formData = new FormData();
-      const parameters = new URLSearchParams(await this.text());
-      for (const [name, value] of parameters) {
-        formData.append(name, value);
+  formData() {
+    return __async(this, null, function* () {
+      const ct = this.headers.get("content-type");
+      if (ct.startsWith("application/x-www-form-urlencoded")) {
+        const formData = new FormData();
+        const parameters = new URLSearchParams(yield this.text());
+        for (const [name, value] of parameters) {
+          formData.append(name, value);
+        }
+        return formData;
       }
-      return formData;
-    }
-    const { toFormData: toFormData2 } = await Promise.resolve().then(() => (init_multipart_parser(), multipart_parser_exports));
-    return toFormData2(this.body, ct);
+      const { toFormData: toFormData2 } = yield Promise.resolve().then(() => (init_multipart_parser(), multipart_parser_exports));
+      return toFormData2(this.body, ct);
+    });
   }
   /**
    * Return raw response as Blob
    *
    * @return Promise
    */
-  async blob() {
-    const ct = this.headers && this.headers.get("content-type") || this[INTERNALS].body && this[INTERNALS].body.type || "";
-    const buf = await this.arrayBuffer();
-    return new fetch_blob_default([buf], {
-      type: ct
+  blob() {
+    return __async(this, null, function* () {
+      const ct = this.headers && this.headers.get("content-type") || this[INTERNALS].body && this[INTERNALS].body.type || "";
+      const buf = yield this.arrayBuffer();
+      return new fetch_blob_default([buf], {
+        type: ct
+      });
     });
   }
   /**
@@ -5301,18 +5443,22 @@ var Body = class {
    *
    * @return  Promise
    */
-  async json() {
-    const text = await this.text();
-    return JSON.parse(text);
+  json() {
+    return __async(this, null, function* () {
+      const text = yield this.text();
+      return JSON.parse(text);
+    });
   }
   /**
    * Decode response as text
    *
    * @return  Promise
    */
-  async text() {
-    const buffer = await consumeBody(this);
-    return new TextDecoder().decode(buffer);
+  text() {
+    return __async(this, null, function* () {
+      const buffer = yield consumeBody(this);
+      return new TextDecoder().decode(buffer);
+    });
   }
   /**
    * Decode response as buffer (non-spec api)
@@ -5338,49 +5484,63 @@ Object.defineProperties(Body.prototype, {
     "https://github.com/node-fetch/node-fetch/issues/1000 (response)"
   ) }
 });
-async function consumeBody(data) {
-  if (data[INTERNALS].disturbed) {
-    throw new TypeError(`body used already for: ${data.url}`);
-  }
-  data[INTERNALS].disturbed = true;
-  if (data[INTERNALS].error) {
-    throw data[INTERNALS].error;
-  }
-  const { body } = data;
-  if (body === null) {
-    return import_node_buffer.Buffer.alloc(0);
-  }
-  if (!(body instanceof import_node_stream.default)) {
-    return import_node_buffer.Buffer.alloc(0);
-  }
-  const accum = [];
-  let accumBytes = 0;
-  try {
-    for await (const chunk of body) {
-      if (data.size > 0 && accumBytes + chunk.length > data.size) {
-        const error = new FetchError(`content size at ${data.url} over limit: ${data.size}`, "max-size");
-        body.destroy(error);
-        throw error;
-      }
-      accumBytes += chunk.length;
-      accum.push(chunk);
+function consumeBody(data) {
+  return __async(this, null, function* () {
+    if (data[INTERNALS].disturbed) {
+      throw new TypeError(`body used already for: ${data.url}`);
     }
-  } catch (error) {
-    const error_ = error instanceof FetchBaseError ? error : new FetchError(`Invalid response body while trying to fetch ${data.url}: ${error.message}`, "system", error);
-    throw error_;
-  }
-  if (body.readableEnded === true || body._readableState.ended === true) {
+    data[INTERNALS].disturbed = true;
+    if (data[INTERNALS].error) {
+      throw data[INTERNALS].error;
+    }
+    const { body } = data;
+    if (body === null) {
+      return import_node_buffer.Buffer.alloc(0);
+    }
+    if (!(body instanceof import_node_stream.default)) {
+      return import_node_buffer.Buffer.alloc(0);
+    }
+    const accum = [];
+    let accumBytes = 0;
     try {
-      if (accum.every((c) => typeof c === "string")) {
-        return import_node_buffer.Buffer.from(accum.join(""));
+      try {
+        for (var iter = __forAwait(body), more, temp, error; more = !(temp = yield iter.next()).done; more = false) {
+          const chunk = temp.value;
+          if (data.size > 0 && accumBytes + chunk.length > data.size) {
+            const error2 = new FetchError(`content size at ${data.url} over limit: ${data.size}`, "max-size");
+            body.destroy(error2);
+            throw error2;
+          }
+          accumBytes += chunk.length;
+          accum.push(chunk);
+        }
+      } catch (temp) {
+        error = [temp];
+      } finally {
+        try {
+          more && (temp = iter.return) && (yield temp.call(iter));
+        } finally {
+          if (error)
+            throw error[0];
+        }
       }
-      return import_node_buffer.Buffer.concat(accum, accumBytes);
-    } catch (error) {
-      throw new FetchError(`Could not create Buffer from response body for ${data.url}: ${error.message}`, "system", error);
+    } catch (error2) {
+      const error_ = error2 instanceof FetchBaseError ? error2 : new FetchError(`Invalid response body while trying to fetch ${data.url}: ${error2.message}`, "system", error2);
+      throw error_;
     }
-  } else {
-    throw new FetchError(`Premature close of server response while trying to fetch ${data.url}`);
-  }
+    if (body.readableEnded === true || body._readableState.ended === true) {
+      try {
+        if (accum.every((c) => typeof c === "string")) {
+          return import_node_buffer.Buffer.from(accum.join(""));
+        }
+        return import_node_buffer.Buffer.concat(accum, accumBytes);
+      } catch (error2) {
+        throw new FetchError(`Could not create Buffer from response body for ${data.url}: ${error2.message}`, "system", error2);
+      }
+    } else {
+      throw new FetchError(`Premature close of server response while trying to fetch ${data.url}`);
+    }
+  });
 }
 var clone = (instance, highWaterMark) => {
   let p1;
@@ -5447,13 +5607,13 @@ var getTotalBytes = (request) => {
   }
   return null;
 };
-var writeToStream = async (dest, { body }) => {
+var writeToStream = (_0, _1) => __async(void 0, [_0, _1], function* (dest, { body }) {
   if (body === null) {
     dest.end();
   } else {
-    await pipeline(body, dest);
+    yield pipeline(body, dest);
   }
-};
+});
 
 // ../../../node_modules/node-fetch/src/headers.js
 var import_node_util2 = require("util");
@@ -5634,7 +5794,7 @@ function fromRawHeaders(headers = []) {
         validateHeaderName(name);
         validateHeaderValue(name, String(value));
         return true;
-      } catch {
+      } catch (e2) {
         return false;
       }
     })
@@ -5745,10 +5905,9 @@ var Response = class _Response extends Body {
     if (!headers.has("content-type")) {
       headers.set("content-type", "application/json");
     }
-    return new _Response(body, {
-      ...init,
+    return new _Response(body, __spreadProps(__spreadValues({}, init), {
       headers
-    });
+    }));
   }
   get [Symbol.toStringTag]() {
     return "Response";
@@ -6123,233 +6282,235 @@ var AbortError = class extends FetchBaseError {
 init_esm_min();
 init_from();
 var supportedSchemas = /* @__PURE__ */ new Set(["data:", "http:", "https:"]);
-async function fetch(url, options_) {
-  return new Promise((resolve, reject) => {
-    const request = new Request(url, options_);
-    const { parsedURL, options } = getNodeRequestOptions(request);
-    if (!supportedSchemas.has(parsedURL.protocol)) {
-      throw new TypeError(`node-fetch cannot load ${url}. URL scheme "${parsedURL.protocol.replace(/:$/, "")}" is not supported.`);
-    }
-    if (parsedURL.protocol === "data:") {
-      const data = dist_default(request.url);
-      const response2 = new Response(data, { headers: { "Content-Type": data.typeFull } });
-      resolve(response2);
-      return;
-    }
-    const send = (parsedURL.protocol === "https:" ? import_node_https.default : import_node_http2.default).request;
-    const { signal } = request;
-    let response = null;
-    const abort = () => {
-      const error = new AbortError("The operation was aborted.");
-      reject(error);
-      if (request.body && request.body instanceof import_node_stream2.default.Readable) {
-        request.body.destroy(error);
+function fetch(url, options_) {
+  return __async(this, null, function* () {
+    return new Promise((resolve, reject) => {
+      const request = new Request(url, options_);
+      const { parsedURL, options } = getNodeRequestOptions(request);
+      if (!supportedSchemas.has(parsedURL.protocol)) {
+        throw new TypeError(`node-fetch cannot load ${url}. URL scheme "${parsedURL.protocol.replace(/:$/, "")}" is not supported.`);
       }
-      if (!response || !response.body) {
+      if (parsedURL.protocol === "data:") {
+        const data = dist_default(request.url);
+        const response2 = new Response(data, { headers: { "Content-Type": data.typeFull } });
+        resolve(response2);
         return;
       }
-      response.body.emit("error", error);
-    };
-    if (signal && signal.aborted) {
-      abort();
-      return;
-    }
-    const abortAndFinalize = () => {
-      abort();
-      finalize();
-    };
-    const request_ = send(parsedURL.toString(), options);
-    if (signal) {
-      signal.addEventListener("abort", abortAndFinalize);
-    }
-    const finalize = () => {
-      request_.abort();
-      if (signal) {
-        signal.removeEventListener("abort", abortAndFinalize);
-      }
-    };
-    request_.on("error", (error) => {
-      reject(new FetchError(`request to ${request.url} failed, reason: ${error.message}`, "system", error));
-      finalize();
-    });
-    fixResponseChunkedTransferBadEnding(request_, (error) => {
-      if (response && response.body) {
-        response.body.destroy(error);
-      }
-    });
-    if (process.version < "v14") {
-      request_.on("socket", (s2) => {
-        let endedWithEventsCount;
-        s2.prependListener("end", () => {
-          endedWithEventsCount = s2._eventsCount;
-        });
-        s2.prependListener("close", (hadError) => {
-          if (response && endedWithEventsCount < s2._eventsCount && !hadError) {
-            const error = new Error("Premature close");
-            error.code = "ERR_STREAM_PREMATURE_CLOSE";
-            response.body.emit("error", error);
-          }
-        });
-      });
-    }
-    request_.on("response", (response_) => {
-      request_.setTimeout(0);
-      const headers = fromRawHeaders(response_.rawHeaders);
-      if (isRedirect(response_.statusCode)) {
-        const location = headers.get("Location");
-        let locationURL = null;
-        try {
-          locationURL = location === null ? null : new URL(location, request.url);
-        } catch {
-          if (request.redirect !== "manual") {
-            reject(new FetchError(`uri requested responds with an invalid redirect URL: ${location}`, "invalid-redirect"));
-            finalize();
-            return;
-          }
+      const send = (parsedURL.protocol === "https:" ? import_node_https.default : import_node_http2.default).request;
+      const { signal } = request;
+      let response = null;
+      const abort = () => {
+        const error = new AbortError("The operation was aborted.");
+        reject(error);
+        if (request.body && request.body instanceof import_node_stream2.default.Readable) {
+          request.body.destroy(error);
         }
-        switch (request.redirect) {
-          case "error":
-            reject(new FetchError(`uri requested responds with a redirect, redirect mode is set to error: ${request.url}`, "no-redirect"));
-            finalize();
-            return;
-          case "manual":
-            break;
-          case "follow": {
-            if (locationURL === null) {
-              break;
-            }
-            if (request.counter >= request.follow) {
-              reject(new FetchError(`maximum redirect reached at: ${request.url}`, "max-redirect"));
-              finalize();
-              return;
-            }
-            const requestOptions = {
-              headers: new Headers(request.headers),
-              follow: request.follow,
-              counter: request.counter + 1,
-              agent: request.agent,
-              compress: request.compress,
-              method: request.method,
-              body: clone(request),
-              signal: request.signal,
-              size: request.size,
-              referrer: request.referrer,
-              referrerPolicy: request.referrerPolicy
-            };
-            if (!isDomainOrSubdomain(request.url, locationURL) || !isSameProtocol(request.url, locationURL)) {
-              for (const name of ["authorization", "www-authenticate", "cookie", "cookie2"]) {
-                requestOptions.headers.delete(name);
-              }
-            }
-            if (response_.statusCode !== 303 && request.body && options_.body instanceof import_node_stream2.default.Readable) {
-              reject(new FetchError("Cannot follow redirect with body being a readable stream", "unsupported-redirect"));
-              finalize();
-              return;
-            }
-            if (response_.statusCode === 303 || (response_.statusCode === 301 || response_.statusCode === 302) && request.method === "POST") {
-              requestOptions.method = "GET";
-              requestOptions.body = void 0;
-              requestOptions.headers.delete("content-length");
-            }
-            const responseReferrerPolicy = parseReferrerPolicyFromHeader(headers);
-            if (responseReferrerPolicy) {
-              requestOptions.referrerPolicy = responseReferrerPolicy;
-            }
-            resolve(fetch(new Request(locationURL, requestOptions)));
-            finalize();
-            return;
-          }
-          default:
-            return reject(new TypeError(`Redirect option '${request.redirect}' is not a valid value of RequestRedirect`));
+        if (!response || !response.body) {
+          return;
         }
+        response.body.emit("error", error);
+      };
+      if (signal && signal.aborted) {
+        abort();
+        return;
       }
+      const abortAndFinalize = () => {
+        abort();
+        finalize();
+      };
+      const request_ = send(parsedURL.toString(), options);
       if (signal) {
-        response_.once("end", () => {
+        signal.addEventListener("abort", abortAndFinalize);
+      }
+      const finalize = () => {
+        request_.abort();
+        if (signal) {
           signal.removeEventListener("abort", abortAndFinalize);
-        });
-      }
-      let body = (0, import_node_stream2.pipeline)(response_, new import_node_stream2.PassThrough(), (error) => {
-        if (error) {
-          reject(error);
+        }
+      };
+      request_.on("error", (error) => {
+        reject(new FetchError(`request to ${request.url} failed, reason: ${error.message}`, "system", error));
+        finalize();
+      });
+      fixResponseChunkedTransferBadEnding(request_, (error) => {
+        if (response && response.body) {
+          response.body.destroy(error);
         }
       });
-      if (process.version < "v12.10") {
-        response_.on("aborted", abortAndFinalize);
+      if (process.version < "v14") {
+        request_.on("socket", (s2) => {
+          let endedWithEventsCount;
+          s2.prependListener("end", () => {
+            endedWithEventsCount = s2._eventsCount;
+          });
+          s2.prependListener("close", (hadError) => {
+            if (response && endedWithEventsCount < s2._eventsCount && !hadError) {
+              const error = new Error("Premature close");
+              error.code = "ERR_STREAM_PREMATURE_CLOSE";
+              response.body.emit("error", error);
+            }
+          });
+        });
       }
-      const responseOptions = {
-        url: request.url,
-        status: response_.statusCode,
-        statusText: response_.statusMessage,
-        headers,
-        size: request.size,
-        counter: request.counter,
-        highWaterMark: request.highWaterMark
-      };
-      const codings = headers.get("Content-Encoding");
-      if (!request.compress || request.method === "HEAD" || codings === null || response_.statusCode === 204 || response_.statusCode === 304) {
-        response = new Response(body, responseOptions);
-        resolve(response);
-        return;
-      }
-      const zlibOptions = {
-        flush: import_node_zlib.default.Z_SYNC_FLUSH,
-        finishFlush: import_node_zlib.default.Z_SYNC_FLUSH
-      };
-      if (codings === "gzip" || codings === "x-gzip") {
-        body = (0, import_node_stream2.pipeline)(body, import_node_zlib.default.createGunzip(zlibOptions), (error) => {
+      request_.on("response", (response_) => {
+        request_.setTimeout(0);
+        const headers = fromRawHeaders(response_.rawHeaders);
+        if (isRedirect(response_.statusCode)) {
+          const location = headers.get("Location");
+          let locationURL = null;
+          try {
+            locationURL = location === null ? null : new URL(location, request.url);
+          } catch (e2) {
+            if (request.redirect !== "manual") {
+              reject(new FetchError(`uri requested responds with an invalid redirect URL: ${location}`, "invalid-redirect"));
+              finalize();
+              return;
+            }
+          }
+          switch (request.redirect) {
+            case "error":
+              reject(new FetchError(`uri requested responds with a redirect, redirect mode is set to error: ${request.url}`, "no-redirect"));
+              finalize();
+              return;
+            case "manual":
+              break;
+            case "follow": {
+              if (locationURL === null) {
+                break;
+              }
+              if (request.counter >= request.follow) {
+                reject(new FetchError(`maximum redirect reached at: ${request.url}`, "max-redirect"));
+                finalize();
+                return;
+              }
+              const requestOptions = {
+                headers: new Headers(request.headers),
+                follow: request.follow,
+                counter: request.counter + 1,
+                agent: request.agent,
+                compress: request.compress,
+                method: request.method,
+                body: clone(request),
+                signal: request.signal,
+                size: request.size,
+                referrer: request.referrer,
+                referrerPolicy: request.referrerPolicy
+              };
+              if (!isDomainOrSubdomain(request.url, locationURL) || !isSameProtocol(request.url, locationURL)) {
+                for (const name of ["authorization", "www-authenticate", "cookie", "cookie2"]) {
+                  requestOptions.headers.delete(name);
+                }
+              }
+              if (response_.statusCode !== 303 && request.body && options_.body instanceof import_node_stream2.default.Readable) {
+                reject(new FetchError("Cannot follow redirect with body being a readable stream", "unsupported-redirect"));
+                finalize();
+                return;
+              }
+              if (response_.statusCode === 303 || (response_.statusCode === 301 || response_.statusCode === 302) && request.method === "POST") {
+                requestOptions.method = "GET";
+                requestOptions.body = void 0;
+                requestOptions.headers.delete("content-length");
+              }
+              const responseReferrerPolicy = parseReferrerPolicyFromHeader(headers);
+              if (responseReferrerPolicy) {
+                requestOptions.referrerPolicy = responseReferrerPolicy;
+              }
+              resolve(fetch(new Request(locationURL, requestOptions)));
+              finalize();
+              return;
+            }
+            default:
+              return reject(new TypeError(`Redirect option '${request.redirect}' is not a valid value of RequestRedirect`));
+          }
+        }
+        if (signal) {
+          response_.once("end", () => {
+            signal.removeEventListener("abort", abortAndFinalize);
+          });
+        }
+        let body = (0, import_node_stream2.pipeline)(response_, new import_node_stream2.PassThrough(), (error) => {
           if (error) {
             reject(error);
           }
         });
-        response = new Response(body, responseOptions);
-        resolve(response);
-        return;
-      }
-      if (codings === "deflate" || codings === "x-deflate") {
-        const raw = (0, import_node_stream2.pipeline)(response_, new import_node_stream2.PassThrough(), (error) => {
-          if (error) {
-            reject(error);
-          }
-        });
-        raw.once("data", (chunk) => {
-          if ((chunk[0] & 15) === 8) {
-            body = (0, import_node_stream2.pipeline)(body, import_node_zlib.default.createInflate(), (error) => {
-              if (error) {
-                reject(error);
-              }
-            });
-          } else {
-            body = (0, import_node_stream2.pipeline)(body, import_node_zlib.default.createInflateRaw(), (error) => {
-              if (error) {
-                reject(error);
-              }
-            });
-          }
+        if (process.version < "v12.10") {
+          response_.on("aborted", abortAndFinalize);
+        }
+        const responseOptions = {
+          url: request.url,
+          status: response_.statusCode,
+          statusText: response_.statusMessage,
+          headers,
+          size: request.size,
+          counter: request.counter,
+          highWaterMark: request.highWaterMark
+        };
+        const codings = headers.get("Content-Encoding");
+        if (!request.compress || request.method === "HEAD" || codings === null || response_.statusCode === 204 || response_.statusCode === 304) {
           response = new Response(body, responseOptions);
           resolve(response);
-        });
-        raw.once("end", () => {
-          if (!response) {
+          return;
+        }
+        const zlibOptions = {
+          flush: import_node_zlib.default.Z_SYNC_FLUSH,
+          finishFlush: import_node_zlib.default.Z_SYNC_FLUSH
+        };
+        if (codings === "gzip" || codings === "x-gzip") {
+          body = (0, import_node_stream2.pipeline)(body, import_node_zlib.default.createGunzip(zlibOptions), (error) => {
+            if (error) {
+              reject(error);
+            }
+          });
+          response = new Response(body, responseOptions);
+          resolve(response);
+          return;
+        }
+        if (codings === "deflate" || codings === "x-deflate") {
+          const raw = (0, import_node_stream2.pipeline)(response_, new import_node_stream2.PassThrough(), (error) => {
+            if (error) {
+              reject(error);
+            }
+          });
+          raw.once("data", (chunk) => {
+            if ((chunk[0] & 15) === 8) {
+              body = (0, import_node_stream2.pipeline)(body, import_node_zlib.default.createInflate(), (error) => {
+                if (error) {
+                  reject(error);
+                }
+              });
+            } else {
+              body = (0, import_node_stream2.pipeline)(body, import_node_zlib.default.createInflateRaw(), (error) => {
+                if (error) {
+                  reject(error);
+                }
+              });
+            }
             response = new Response(body, responseOptions);
             resolve(response);
-          }
-        });
-        return;
-      }
-      if (codings === "br") {
-        body = (0, import_node_stream2.pipeline)(body, import_node_zlib.default.createBrotliDecompress(), (error) => {
-          if (error) {
-            reject(error);
-          }
-        });
+          });
+          raw.once("end", () => {
+            if (!response) {
+              response = new Response(body, responseOptions);
+              resolve(response);
+            }
+          });
+          return;
+        }
+        if (codings === "br") {
+          body = (0, import_node_stream2.pipeline)(body, import_node_zlib.default.createBrotliDecompress(), (error) => {
+            if (error) {
+              reject(error);
+            }
+          });
+          response = new Response(body, responseOptions);
+          resolve(response);
+          return;
+        }
         response = new Response(body, responseOptions);
         resolve(response);
-        return;
-      }
-      response = new Response(body, responseOptions);
-      resolve(response);
+      });
+      writeToStream(request_, request).catch(reject);
     });
-    writeToStream(request_, request).catch(reject);
   });
 }
 function fixResponseChunkedTransferBadEnding(request, errorCallback) {
@@ -6390,30 +6551,32 @@ var app = (0, import_fastify.default)();
 var urlSchema = import_zod.z.object({
   url: import_zod.z.string()
 });
-async function getDataBlob(url) {
-  try {
-    const res = await fetch(url);
-    const buffer = await res.buffer();
-    const base64Data = buffer.toString("base64");
-    return base64Data;
-  } catch (err) {
-    console.error("Erro ao obter dados:", err);
-    throw err;
-  }
+function getDataBlob(url) {
+  return __async(this, null, function* () {
+    try {
+      const res = yield fetch(url);
+      const buffer = yield res.buffer();
+      const base64Data = buffer.toString("base64");
+      return base64Data;
+    } catch (err) {
+      console.error("Erro ao obter dados:", err);
+      throw err;
+    }
+  });
 }
-app.post("/transform", async (request, reply) => {
+app.post("/transform", (request, reply) => __async(exports, null, function* () {
   try {
     const { url } = urlSchema.parse(request.body);
-    const base64Data = await getDataBlob(url);
+    const base64Data = yield getDataBlob(url);
     return reply.status(200).send(base64Data);
   } catch (err) {
     console.error("Erro na requisi\xE7\xE3o:", err);
     return reply.status(500).send({ error: "Erro ao processar a requisi\xE7\xE3o" });
   }
-});
+}));
 app.listen({
   host: "0.0.0.0",
-  port: process.env.PORT ? Number(process.env.PORT) : 3087
+  port: process.env.PORT ? Number(process.env.PORT) : 3088
 }).then(() => {
   console.log("Servidor HTTP rodando");
 }).catch((err) => {
